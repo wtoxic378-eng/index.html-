@@ -382,10 +382,179 @@ body:after {
     scroll-behavior:auto!important;
     transition-duration:.01ms!important;
   }
+} 
+/* MY PAY NEUTRAL OWL MASCOT */
+.owl-mascot {
+  width:150px;
+  height:165px;
+  position:relative;
+  margin:auto;
+  filter:drop-shadow(0 0 16px #28baffaa);
+  animation:owlFloat 3s ease-in-out infinite;
 }
+
+.owl-head {
+  position:absolute;
+  width:116px;
+  height:91px;
+  left:17px;
+  top:18px;
+  border-radius:48% 48% 43% 43%;
+  background:linear-gradient(145deg,#55d9ff,#0870ed 65%,#063baf);
+  z-index:3;
+  box-shadow:inset -7px -8px 12px #002b9b66;
+}
+
+.owl-ear {
+  position:absolute;
+  top:15px;
+  width:35px;
+  height:39px;
+  background:#0755c9;
+  z-index:2;
+}
+.owl-ear.left {
+  left:15px;
+  transform:rotate(-30deg);
+  border-radius:5px 90% 0 0;
+}
+.owl-ear.right {
+  right:15px;
+  transform:rotate(30deg);
+  border-radius:90% 5px 0 0;
+}
+
+.owl-eyes {
+  display:flex;
+  justify-content:space-evenly;
+  padding-top:24px;
+}
+.owl-eye {
+  width:40px;
+  height:43px;
+  border-radius:50%;
+  background:white;
+  display:grid;
+  place-items:center;
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 0 8px #b9edff;
+}
+.pupil {
+  width:25px;
+  height:29px;
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff 0 9%,#17234c 12% 65%,#020b2b 70%);
+  animation:eyeMove 4s infinite;
+}
+.eyelid {
+  position:absolute;
+  inset:0;
+  background:linear-gradient(#0871e8,#0750c0);
+  border-radius:50%;
+  transform:scaleY(0);
+  transform-origin:top;
+  animation:owlBlink 4s infinite;
+}
+.owl-beak {
+  position:absolute;
+  width:17px;
+  height:20px;
+  left:50%;
+  top:62px;
+  transform:translateX(-50%);
+  background:linear-gradient(135deg,#ffe46a,#f28b00);
+  clip-path:polygon(0 0,100% 0,50% 100%);
+  z-index:5;
+}
+.owl-body {
+  position:absolute;
+  width:112px;
+  height:75px;
+  left:19px;
+  top:88px;
+  border-radius:48% 48% 35% 35%;
+  background:linear-gradient(135deg,#168dff,#0647bc);
+  overflow:hidden;
+}
+.owl-belly {
+  position:absolute;
+  width:68px;
+  height:57px;
+  bottom:0;
+  left:22px;
+  border-radius:50% 50% 35% 35%;
+  background:linear-gradient(#fff,#cceeff);
+}
+.owl-wing {
+  position:absolute;
+  top:10px;
+  width:28px;
+  height:53px;
+  background:linear-gradient(135deg,#0753c8,#032c83);
+  border-radius:50%;
+}
+.owl-wing.left {left:-7px;transform:rotate(15deg)}
+.owl-wing.right {right:-7px;transform:rotate(-15deg)}
+.owl-feet {
+  position:absolute;
+  top:153px;
+  left:51px;
+  display:flex;
+  gap:17px;
+}
+.owl-feet i {
+  width:15px;
+  height:8px;
+  border-radius:50%;
+  background:#ffb326;
+}
+
+@keyframes owlFloat {
+  0%,100% {transform:translateY(0) rotate(-2deg)}
+  50% {transform:translateY(-9px) rotate(2deg)}
+}
+@keyframes owlBlink {
+  0%,42%,46%,100% {transform:scaleY(0)}
+  44% {transform:scaleY(1)}
+}
+@keyframes eyeMove {
+  0%,40%,100% {transform:translateX(0)}
+  45%,55% {transform:translateX(3px)}
+  60% {transform:translateX(-2px)}
+}
+
+@media(prefers-reduced-motion:reduce) {
+  .owl-mascot,.pupil,.eyelid {animation:none}
+  }
+  
 </style>
 </head>
 
+<div class="owl-mascot" aria-label="MyPay Neutral animated owl">
+  <div class="owl-ear left"></div>
+  <div class="owl-ear right"></div>
+  <div class="owl-head">
+    <div class="owl-eyes">
+      <div class="owl-eye">
+        <span class="pupil"></span>
+        <span class="eyelid"></span>
+      </div>
+      <div class="owl-eye">
+        <span class="pupil"></span>
+        <span class="eyelid"></span>
+      </div>
+    </div>
+    <div class="owl-beak"></div>
+  </div>
+  <div class="owl-body">
+    <div class="owl-belly"></div>
+    <div class="owl-wing left"></div>
+    <div class="owl-wing right"></div>
+  </div>
+  <div class="owl-feet"><i></i><i></i></div>
+</div>
+  
 <body>
 
 <div class="splash" id="splash">

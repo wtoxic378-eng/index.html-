@@ -1,282 +1,650 @@
+
 <!DOCTYPE html>
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#0756b9">
-<title>MyPay Neutral</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#063a9b">
+<title>MyPay Neutral | Dashboard</title>
+
 <style>
-*{box-sizing:border-box}
-body{
- margin:0;font-family:Arial,sans-serif;
- background:#f1f6ff;color:#142b4a;
+:root {
+  --blue:#0756d9;
+  --deep:#032c83;
+  --navy:#031d63;
+  --cyan:#28d9ff;
+  --light:#eaf4ff;
+  --white:#fff;
+  --text:#102b70;
+  --muted:#7185ae;
+  --green:#10a96b;
+  --red:#e34e62;
 }
-header{
- background:linear-gradient(135deg,#0646a8,#1684ef);
- color:white;padding:22px 18px 35px;
- border-radius:0 0 28px 28px;
+* {box-sizing:border-box;margin:0;padding:0}
+body {
+  font-family:Arial,"Noto Sans Bengali",sans-serif;
+  background:linear-gradient(135deg,#e6f2ff,#b8dcff,#eef7ff);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
 }
-.brand{display:flex;align-items:center;gap:12px}
-.logo{
- width:52px;height:52px;background:white;
- border-radius:16px;display:grid;place-items:center;
- font-size:29px;
+button,input {font:inherit}
+button {cursor:pointer}
+button:focus-visible,input:focus-visible {
+  outline:3px solid var(--cyan);
+  outline-offset:3px;
 }
-.brand h2{margin:0;font-size:22px}
-.brand small{color:#dceaff}
-.welcome{margin-top:28px}
-.welcome h2{font-size:23px;margin:0 0 8px}
-.card{
- background:white;margin:18px;padding:20px;
- border-radius:20px;
- box-shadow:0 5px 20px #174a8012;
+button:disabled {opacity:.55;cursor:not-allowed}
+
+/* SPLASH SCREEN */
+.splash {
+  position:fixed;inset:0;z-index:100;
+  background:radial-gradient(circle at center,#087bff,#031b70 75%);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  color:white;text-align:center;
+  transition:opacity .7s,visibility .7s;
 }
-.balance{
- background:linear-gradient(135deg,#0756b9,#1689ed);
- color:white;
+.splash.hide {opacity:0;visibility:hidden}
+.splash-owl {font-size:100px;animation:bob 1.5s infinite ease-in-out}
+.splash h1 {font-size:32px;margin-top:12px}
+.splash p {margin-top:8px;color:#d6efff}
+.loader {
+  width:42px;height:42px;border:4px solid #ffffff40;
+  border-top-color:white;border-radius:50%;
+  margin-top:35px;animation:spin .8s linear infinite;
 }
-.balance small{opacity:.8}
-.balance h1{font-size:32px;margin:12px 0}
-.actions{
- display:grid;grid-template-columns:repeat(3,1fr);
- gap:12px;
+@keyframes spin {to{transform:rotate(360deg)}}
+@keyframes bob {50%{transform:translateY(-13px) rotate(3deg)}}
+
+/* BACKGROUND */
+body:before,body:after {
+  content:"";position:fixed;border-radius:50%;
+  filter:blur(3px);pointer-events:none;z-index:-1;
+  animation:float 9s infinite alternate ease-in-out;
 }
-.action{
- border:1px solid #e2ebfa;
- background:#f8fbff;border-radius:17px;
- padding:16px 5px;text-align:center;
- cursor:pointer;color:#0756b9;
- font-weight:bold;
+body:before {
+  width:350px;height:350px;background:#3d9bff35;
+  top:15%;left:-170px;
 }
-.action span{font-size:27px;display:block;margin-bottom:9px}
-.action:active{transform:scale(.96)}
-.section-title{font-size:18px;font-weight:bold}
-.transaction{
- display:flex;justify-content:space-between;
- align-items:center;padding:14px 0;
- border-bottom:1px solid #edf1f7;
+body:after {
+  width:300px;height:300px;background:#00c8ff30;
+  bottom:0;right:-150px;animation-delay:2s;
 }
-.transaction:last-child{border:0}
-.amount{font-weight:bold}
-.positive{color:#07965d}
-.negative{color:#dc3657}
-.owl{
- text-align:center;background:#e4f1ff;
- border-radius:20px;padding:18px;
- margin-top:18px;
+@keyframes float {
+  to {transform:translate(70px,-45px) scale(1.15)}
 }
-.owl .bird{font-size:65px}
-.owl h3{margin:8px;color:#0756b9}
-nav{
- position:fixed;bottom:0;left:0;right:0;
- display:flex;justify-content:space-around;
- background:white;padding:12px 5px;
- box-shadow:0 -3px 15px #00000010;
+
+/* HEADER */
+.header {
+  position:sticky;top:0;z-index:20;
+  height:76px;padding:0 4%;
+  display:flex;align-items:center;justify-content:space-between;
+  background:#ffffffeb;backdrop-filter:blur(16px);
+  border-bottom:1px solid #ffffff;
+  box-shadow:0 5px 25px #003a8210;
 }
-nav button{
- border:0;background:none;color:#61748f;
- font-size:12px;cursor:pointer;
+.brand {display:flex;align-items:center;gap:12px}
+.brand-icon {
+  height:49px;width:49px;border-radius:15px;
+  display:grid;place-items:center;
+  background:linear-gradient(135deg,#0878ff,#032b91);
+  box-shadow:0 0 17px #168bff65;
+  font-size:29px;
 }
-nav button b{display:block;font-size:21px}
-nav button.active{color:#0756b9}
-button.primary{
- background:#0756b9;color:white;border:0;
- border-radius:12px;padding:14px;width:100%;
- font-size:16px;font-weight:bold;cursor:pointer;
+.brand h2 {font-size:21px;color:var(--deep)}
+.brand small {display:block;font-size:10px;color:#647cae;margin-top:3px}
+.header-right {display:flex;align-items:center;gap:14px}
+.demo-tag {
+  background:#fff2cf;color:#906008;
+  padding:8px 13px;border-radius:30px;font-size:11px;
+  font-weight:bold;
 }
-input{
- width:100%;padding:14px;border:1px solid #d6e2f4;
- border-radius:12px;margin:10px 0;font-size:16px;
+.avatar {
+  border:0;width:42px;height:42px;border-radius:50%;
+  background:linear-gradient(135deg,#18a7ff,#0747d0);
+  color:white;font-weight:bold;font-size:17px;
 }
-.page{display:none;padding-bottom:85px}
-.page.active{display:block}
-footer{text-align:center;color:#8291a5;font-size:11px;padding:20px}
+
+/* LAYOUT */
+.layout {
+  max-width:1450px;margin:auto;padding:25px;
+  display:grid;grid-template-columns:245px minmax(0,1fr);
+  gap:23px;
+}
+.sidebar {
+  min-height:calc(100vh - 120px);
+  background:linear-gradient(180deg,#06358e,#031d63);
+  border-radius:25px;padding:22px 15px;color:white;
+  box-shadow:0 15px 35px #002a7c40;
+  position:sticky;top:96px;height:max-content;
+}
+.mascot {
+  text-align:center;padding:12px 5px 22px;
+  border-bottom:1px solid #ffffff25;
+}
+.owl {
+  font-size:72px;display:block;
+  filter:drop-shadow(0 0 13px #35caff);
+  animation:bob 3s infinite ease-in-out;
+}
+.mascot h2 {font-size:21px;margin-top:6px}
+.mascot p {font-size:11px;color:#c7eaff;margin-top:5px}
+.menu-label {
+  font-size:10px;color:#9dc8ff;
+  margin:22px 10px 10px;letter-spacing:1px;
+}
+.nav-item {
+  display:flex;align-items:center;gap:12px;
+  width:100%;padding:13px 12px;margin:5px 0;
+  background:transparent;border:0;border-radius:13px;
+  color:#e2efff;text-align:left;font-size:13px;
+  transition:.25s;
+}
+.nav-item:hover,.nav-item.active {
+  background:linear-gradient(100deg,#19b8ff,#0872ff);
+  color:white;transform:translateX(4px);
+  box-shadow:0 0 17px #00aaff65;
+}
+.nav-icon {font-size:19px}
+.sidebar-note {
+  margin-top:30px;padding:13px;
+  border:1px solid #ffffff2b;border-radius:13px;
+  font-size:11px;color:#d3eaff;line-height:1.7;
+}
+
+/* MAIN */
+.content {min-width:0}
+.welcome {
+  display:flex;justify-content:space-between;
+  align-items:center;gap:12px;margin:5px 0 23px;
+  animation:appear .7s both;
+}
+.welcome h1 {font-size:26px;color:var(--deep);margin-bottom:7px}
+.welcome p {font-size:13px;color:var(--muted)}
+.date {font-size:12px;color:#607ba9}
+@keyframes appear {
+  from {opacity:0;transform:translateY(18px)}
+  to {opacity:1;transform:translateY(0)}
+}
+
+/* HERO */
+.hero {
+  position:relative;overflow:hidden;
+  border-radius:23px;padding:23px 26px;
+  background:linear-gradient(115deg,#0759d9,#00318f 65%,#0879ed);
+  color:white;display:flex;justify-content:space-between;
+  align-items:center;min-height:170px;
+  box-shadow:0 13px 30px #0756b940;
+  animation:appear .8s .1s both;
+}
+.hero:before {
+  content:"";position:absolute;width:260px;height:260px;
+  border:30px solid #ffffff13;border-radius:50%;
+  right:8%;top:-145px;
+}
+.hero-text {position:relative;z-index:1}
+.hero h2 {font-size:28px;margin-bottom:10px}
+.hero p {font-size:13px;color:#d9edff;line-height:1.7}
+.hero-owl {
+  font-size:95px;position:relative;z-index:1;
+  filter:drop-shadow(0 0 16px #7de5ff);
+  animation:bob 3s infinite ease-in-out;
+}
+
+/* BALANCE */
+.balance {
+  position:relative;overflow:hidden;margin-top:20px;
+  padding:24px 27px;border-radius:22px;
+  color:white;background:linear-gradient(115deg,#062c8d,#075fe0,#00358f);
+  border:1px solid #48cfff;
+  box-shadow:0 0 12px #00aaff80,0 10px 30px #074abf35;
+  animation:appear .8s .2s both,glow 4s infinite alternate;
+}
+@keyframes glow {
+  to {box-shadow:0 0 26px #00d9ff99,0 12px 35px #074abf45}
+}
+.balance:after {
+  content:"";position:absolute;width:210px;height:210px;
+  border:28px solid #ffffff12;border-radius:50%;
+  right:-50px;top:-110px;
+}
+.balance-top {display:flex;justify-content:space-between;position:relative;z-index:1}
+.balance-label {font-size:13px;color:#d9edff}
+.balance-amount {font-size:36px;font-weight:bold;margin:15px 0}
+.balance-bottom {display:flex;justify-content:space-between;align-items:center}
+.balance-bottom small {font-size:11px;color:#d5eaff}
+.hide-balance {
+  background:#ffffff20;border:1px solid #ffffff50;
+  color:white;border-radius:20px;padding:6px 10px;font-size:12px;
+}
+
+/* SERVICES */
+.section-title {
+  font-size:18px;color:var(--deep);margin:27px 0 15px;
+}
+.actions {
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:14px;
+}
+.action {
+  border:1px solid #ffffff;background:#ffffffeb;
+  border-radius:19px;padding:19px 8px;
+  color:var(--text);text-align:center;
+  box-shadow:0 6px 18px #165bb01a;
+  transition:transform .25s,box-shadow .25s;
+  animation:appear .7s both;
+}
+.action:nth-child(2){animation-delay:.08s}
+.action:nth-child(3){animation-delay:.16s}
+.action:nth-child(4){animation-delay:.24s}
+.action:hover {
+  transform:translateY(-6px);
+  box-shadow:0 13px 25px #0876e83a;
+}
+.action:active {transform:scale(.94)}
+.action-icon {
+  height:53px;width:53px;margin:0 auto 11px;
+  display:grid;place-items:center;border-radius:17px;
+  color:white;font-size:24px;
+  background:linear-gradient(135deg,#18bfff,#0751d6);
+  box-shadow:0 5px 14px #0875df50;
+}
+.action:nth-child(2) .action-icon {background:linear-gradient(135deg,#22b6ff,#0871b9)}
+.action:nth-child(3) .action-icon {background:linear-gradient(135deg,#25d7a0,#07915f)}
+.action:nth-child(4) .action-icon {background:linear-gradient(135deg,#aa77ff,#6234d9)}
+.action strong {display:block;font-size:12px}
+.action small {display:block;color:var(--muted);font-size:10px;margin-top:6px}
+
+/* PANELS */
+.grid-two {
+  display:grid;grid-template-columns:1.4fr 1fr;
+  gap:16px;margin-top:23px;
+}
+.panel {
+  background:#ffffffeb;border:1px solid white;
+  border-radius:19px;padding:19px;
+  box-shadow:0 7px 23px #174f9d13;
+  animation:appear .8s .3s both;
+}
+.panel-heading {
+  display:flex;justify-content:space-between;
+  align-items:center;margin-bottom:13px;gap:8px;
+}
+.panel-heading h3 {font-size:15px;color:var(--deep)}
+.panel-heading button {
+  border:0;background:transparent;color:var(--blue);
+  font-size:11px;
+}
+.transaction {
+  display:flex;align-items:center;gap:11px;
+  padding:12px 0;border-bottom:1px solid #eaf0f9;
+  animation:appear .35s both;
+}
+.transaction:last-child {border:0}
+.tx-icon {
+  width:39px;height:39px;border-radius:13px;
+  background:#eaf3ff;display:grid;place-items:center;
+  font-size:18px;flex-shrink:0;
+}
+.tx-info {flex:1;min-width:0}
+.tx-info strong {font-size:12px;display:block}
+.tx-info small {font-size:10px;color:var(--muted);display:block;margin-top:4px}
+.tx-amount {font-size:12px;font-weight:bold;white-space:nowrap}
+.income {color:var(--green)}
+.expense {color:var(--red)}
+.quick-info {
+  background:#eaf4ff;border-radius:13px;padding:14px;margin-bottom:11px;
+}
+.quick-info strong {font-size:12px;color:var(--deep)}
+.quick-info p {font-size:11px;color:var(--muted);line-height:1.6;margin-top:6px}
+.notice {
+  margin-top:20px;padding:13px 15px;
+  background:#fff5df;border:1px solid #f6e1b2;
+  border-radius:13px;color:#7d5c20;
+  font-size:11px;line-height:1.7;
+}
+.footer {text-align:center;padding:22px;color:#7288ae;font-size:11px}
+
+/* MODAL */
+.modal-bg {
+  position:fixed;inset:0;z-index:50;
+  background:#031944a8;backdrop-filter:blur(5px);
+  display:none;align-items:center;justify-content:center;padding:16px;
+}
+.modal-bg.show {display:flex;animation:appear .25s}
+.modal {
+  width:100%;max-width:390px;background:white;
+  border-radius:22px;padding:23px;
+  box-shadow:0 20px 60px #001a5540;
+}
+.modal h2 {font-size:20px;color:var(--deep);margin-bottom:9px}
+.modal p {font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:15px}
+.modal input {
+  display:block;width:100%;padding:13px;
+  border:1px solid #dce8f7;border-radius:11px;
+  margin:10px 0;font-size:14px;
+}
+.modal-buttons {display:flex;gap:10px;margin-top:14px}
+.primary,.secondary {
+  flex:1;border:0;border-radius:11px;padding:13px;font-weight:bold;
+}
+.primary {background:var(--blue);color:white}
+.secondary {background:#edf3fa;color:var(--text)}
+.primary:active {transform:scale(.97)}
+
+/* MOBILE NAV */
+.mobile-nav {display:none}
+@media(max-width:800px) {
+  .layout {display:block;padding:17px 13px 100px}
+  .sidebar {display:none}
+  .header {height:67px;padding:0 14px}
+  .brand h2 {font-size:17px}
+  .brand small {font-size:9px}
+  .brand-icon {height:42px;width:42px}
+  .demo-tag {font-size:9px;padding:7px}
+  .welcome h1 {font-size:21px}
+  .date {display:none}
+  .hero {min-height:145px;padding:19px}
+  .hero h2 {font-size:22px}
+  .hero p {font-size:11px}
+  .hero-owl {font-size:70px}
+  .balance {padding:21px}
+  .balance-amount {font-size:30px}
+  .actions {grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid-two {grid-template-columns:1fr}
+  .mobile-nav {
+    position:fixed;bottom:0;left:0;right:0;
+    z-index:25;background:#ffffffef;
+    backdrop-filter:blur(14px);
+    border-top:1px solid #dceaff;
+    display:flex;justify-content:space-around;
+    padding:9px 4px calc(9px + env(safe-area-inset-bottom));
+  }
+  .mobile-nav button {
+    border:0;background:none;color:#7a8caf;
+    font-size:10px;display:grid;justify-items:center;gap:4px;
+    min-width:55px;
+  }
+  .mobile-nav button span {font-size:20px}
+  .mobile-nav button.active {color:var(--blue);font-weight:bold}
+}
+@media(max-width:380px) {
+  .demo-tag {display:none}
+  .hero-owl {font-size:58px}
+  .balance-amount {font-size:26px}
+  .action {padding:15px 5px}
+}
+@media(prefers-reduced-motion:reduce) {
+  *,*:before,*:after {
+    animation-duration:.01ms!important;
+    animation-iteration-count:1!important;
+    scroll-behavior:auto!important;
+    transition-duration:.01ms!important;
+  }
+}
 </style>
 </head>
+
 <body>
 
-<header>
- <div class="brand">
-  <div class="logo">🦉</div>
-  <div>
-   <h2>MyPay Neutral</h2>
-   <small>Simple • Smart • Friendly</small>
+<div class="splash" id="splash">
+  <div class="splash-owl">🦉</div>
+  <h1>MyPay Neutral</h1>
+  <p>সবার জন্য সহজ ডিজিটাল সেবা</p>
+  <div class="loader"></div>
+  <p>লোড হচ্ছে...</p>
+</div>
+
+<header class="header">
+  <div class="brand">
+    <div class="brand-icon">🦉</div>
+    <div>
+      <h2>MyPay Neutral</h2>
+      <small>বিশ্বাসের সাথে ডিজিটাল পথচলা</small>
+    </div>
   </div>
- </div>
- <div class="welcome">
-  <h2>স্বাগতম MyPay-তে!</h2>
-  <p>আপনার ডিজিটাল অভিজ্ঞতা শুরু হোক।</p>
- </div>
+  <div class="header-right">
+    <span class="demo-tag">DEMO ACCOUNT</span>
+    <button class="avatar" aria-label="Profile" onclick="showInfo('Profile')">U</button>
+  </div>
 </header>
 
-<main>
-<section id="home" class="page active">
- <div class="card balance">
-  <small>আপনার ডেমো ব্যালেন্স</small>
-  <h1 id="balance">৳ ২৫,০০০.০০</h1>
-  <small>এটি কাল্পনিক পরীক্ষামূলক ব্যালেন্স</small>
- </div>
+<div class="layout">
 
- <div class="card">
-  <div class="section-title">আমাদের সেবাসমূহ</div>
-  <br>
+<aside class="sidebar">
+  <div class="mascot">
+    <span class="owl">🦉</span>
+    <h2>MyPay Neutral</h2>
+    <p>সবার জন্য সহজ ডিজিটাল সেবা</p>
+  </div>
+  <p class="menu-label">MAIN MENU</p>
+  <button class="nav-item active" onclick="goHome(this)">🏠 Dashboard</button>
+  <button class="nav-item" onclick="openDemo('Send Money')">📤 Send Money</button>
+  <button class="nav-item" onclick="openDemo('Cash Out')">🏧 Cash Out</button>
+  <button class="nav-item" onclick="openDemo('Mobile Recharge')">📱 Mobile Recharge</button>
+  <button class="nav-item" onclick="goHistory(this)">📜 Transactions</button>
+  <button class="nav-item" onclick="showInfo('Profile')">👤 Profile</button>
+  <button class="nav-item" onclick="showInfo('Settings')">⚙️ Settings</button>
+  <div class="sidebar-note">🛡️ Educational Demo Project<br>কোনো বাস্তব টাকা লেনদেন হয় না।</div>
+</aside>
+
+<main class="content" id="home">
+
+  <div class="welcome">
+    <div>
+      <h1>স্বাগতম! 👋</h1>
+      <p>আপনার MyPay Neutral ড্যাশবোর্ডে স্বাগতম।</p>
+    </div>
+    <span class="date" id="today"></span>
+  </div>
+
+  <section class="hero">
+    <div class="hero-text">
+      <h2>সহজ, নিরাপদ ও স্মার্ট! ✨</h2>
+      <p>আপনার ডিজিটাল অভিজ্ঞতা হোক আরও সহজ।<br>MyPay Neutral-এর ডেমো জগতে স্বাগতম!</p>
+    </div>
+    <div class="hero-owl" aria-label="Owl mascot">🦉</div>
+  </section>
+
+  <section class="balance">
+    <div class="balance-top">
+      <span class="balance-label">Available Demo Balance</span>
+      <button class="hide-balance" id="toggleBalance" onclick="toggleBalance()">◉ Hide</button>
+    </div>
+    <div class="balance-amount" id="balance">৳ 25,000.00</div>
+    <div class="balance-bottom">
+      <small>শুধুমাত্র কাল্পনিক পরীক্ষামূলক ব্যালেন্স</small>
+      <span>💳</span>
+    </div>
+  </section>
+
+  <h3 class="section-title">আপনার সেবাসমূহ</h3>
+
   <div class="actions">
-   <button class="action" onclick="showPage('send')">
-    <span>📤</span>সেন্ড মানি
-   </button>
-   <button class="action" onclick="demo('অ্যাড মানি')">
-    <span>➕</span>অ্যাড মানি
-   </button>
-   <button class="action" onclick="demo('ক্যাশ আউট')">
-    <span>💳</span>ক্যাশ আউট
-   </button>
-   <button class="action" onclick="demo('মোবাইল রিচার্জ')">
-    <span>📱</span>রিচার্জ
-   </button>
-   <button class="action" onclick="demo('বিল পেমেন্ট')">
-    <span>🧾</span>বিল পে
-   </button>
-   <button class="action" onclick="showPage('history')">
-    <span>🕒</span>হিস্ট্রি
-   </button>
+    <button class="action" onclick="openDemo('Send Money')">
+      <div class="action-icon">➤</div>
+      <strong>Send Money</strong><small>Demo only</small>
+    </button>
+    <button class="action" onclick="openDemo('Cash Out')">
+      <div class="action-icon">🏧</div>
+      <strong>Cash Out</strong><small>Demo only</small>
+    </button>
+    <button class="action" onclick="openDemo('Mobile Recharge')">
+      <div class="action-icon">📱</div>
+      <strong>Mobile Recharge</strong><small>Demo only</small>
+    </button>
+    <button class="action" onclick="goHistory()">
+      <div class="action-icon">📋</div>
+      <strong>Transactions</strong><small>History দেখুন</small>
+    </button>
   </div>
- </div>
 
- <div class="card owl">
-  <div class="bird">🦉</div>
-  <h3>আমি পেঁচা!</h3>
-  <p>MyPay Neutral-এর বন্ধুসুলভ সহকারী।</p>
- </div>
+  <div class="grid-two">
+    <section class="panel" id="history">
+      <div class="panel-heading">
+        <h3>📜 সাম্প্রতিক লেনদেন</h3>
+        <button onclick="goHistory()">সব দেখুন →</button>
+      </div>
+      <div id="transactions">
+        <div class="transaction">
+          <div class="tx-icon">🎁</div>
+          <div class="tx-info">
+            <strong>Demo Welcome Balance</strong>
+            <small>নমুনা এন্ট্রি</small>
+          </div>
+          <div class="tx-amount income">+৳25,000</div>
+        </div>
+      </div>
+    </section>
 
- <div class="card">
-  <div class="section-title">সাম্প্রতিক কার্যক্রম</div>
-  <div id="recent">
-   <p style="color:#8492a5">এখনো কোনো ডেমো লেনদেন নেই।</p>
+    <section class="panel">
+      <div class="panel-heading"><h3>🛡️ নিরাপত্তা ও তথ্য</h3></div>
+      <div class="quick-info">
+        <strong>নিরাপদ Demo Environment</strong>
+        <p>এটি একটি শিক্ষামূলক UI Prototype। কোনো বাস্তব আর্থিক লেনদেন হয় না।</p>
+      </div>
+      <div class="quick-info">
+        <strong>আমাদের লক্ষ্য</strong>
+        <p>সহজ ও ব্যবহারবান্ধব ডিজিটাল সেবা সম্পর্কে শেখা।</p>
+      </div>
+    </section>
   </div>
- </div>
-</section>
 
-<section id="send" class="page">
- <div class="card">
-  <h2>📤 সেন্ড মানি ডেমো</h2>
-  <p>একটি কাল্পনিক লেনদেন পরীক্ষা করো।</p>
-  <input id="number" placeholder="মোবাইল নম্বর লিখুন">
-  <input id="money" type="number" placeholder="টাকার পরিমাণ">
-  <button class="primary" onclick="sendDemo()">ডেমো পরীক্ষা করুন</button>
-  <p style="font-size:12px;color:#8291a5">
-   কোনো বাস্তব টাকা পাঠানো হবে না।
-  </p>
- </div>
-</section>
-
-<section id="history" class="page">
- <div class="card">
-  <h2>লেনদেনের ইতিহাস</h2>
-  <div id="allHistory">কোনো ডেমো লেনদেন নেই।</div>
- </div>
-</section>
-
-<section id="profile" class="page">
- <div class="card">
-  <div class="owl">
-   <div class="bird">🦉</div>
-   <h3>MyPay Neutral</h3>
-   <p>আমাদের পেঁচা, আমাদের পরিচয়।</p>
+  <div class="notice">
+    ⚠️ <strong>গুরুত্বপূর্ণ:</strong>
+    এটি একটি শিক্ষামূলক ডেমো। এখানে দেখানো ব্যালেন্স ও লেনদেন কাল্পনিক।
+    কোনো বাস্তব অর্থ পাঠানো, গ্রহণ বা জমা হয় না। ব্যাংক বা MFS অ্যাকাউন্টের তথ্য দেবেন না।
   </div>
-  <h3>প্রোফাইল</h3>
-  <p>অ্যাকাউন্ট: Demo User</p>
-  <p>অ্যাপ: MyPay Neutral</p>
-  <p>সংস্করণ: 1.0 Demo</p>
-  <button class="primary" onclick="demo('সেটিংস')">সেটিংস</button>
- </div>
-</section>
+
 </main>
+</div>
 
-<nav>
- <button class="active" onclick="showPage('home',this)">
-  <b>⌂</b>হোম
- </button>
- <button onclick="showPage('history',this)">
-  <b>▤</b>হিস্ট্রি
- </button>
- <button onclick="showPage('send',this)">
-  <b>➤</b>সেন্ড
- </button>
- <button onclick="showPage('profile',this)">
-  <b>♙</b>প্রোফাইল
- </button>
+<nav class="mobile-nav">
+  <button class="active" onclick="goHome(this)"><span>🏠</span>Home</button>
+  <button onclick="goHistory(this)"><span>📜</span>History</button>
+  <button onclick="showInfo('Profile')"><span>👤</span>Profile</button>
+  <button onclick="showInfo('Settings')"><span>⚙️</span>Settings</button>
 </nav>
 
-<footer>
- MyPay Neutral © 2026<br>
- Demo Application — No Real Money
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <h2 id="modalTitle">Demo Transaction</h2>
+    <p>এটি শুধুমাত্র কাল্পনিক ডেমো। কোনো বাস্তব টাকা পাঠানো বা কাটা হবে না।</p>
+    <input id="demoName" maxlength="30" placeholder="ডেমো বিবরণ (ঐচ্ছিক)">
+    <input id="demoAmount" type="number" min="1" max="25000" placeholder="Demo Amount (৳)">
+    <div class="modal-buttons">
+      <button class="secondary" onclick="closeDemo()">বাতিল</button>
+      <button class="primary" onclick="addDemo()">Demo চালাও</button>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  © 2026 MyPay Neutral | Educational Demo Project 💙
 </footer>
 
 <script>
-let demoBalance=25000;
-let records=[];
+let balance = 25000;
+let selectedAction = "";
+let hidden = false;
 
-function showPage(id,btn){
- document.querySelectorAll('.page').forEach(p=>
-  p.classList.remove('active'));
- document.getElementById(id).classList.add('active');
- document.querySelectorAll('nav button').forEach(b=>
-  b.classList.remove('active'));
- if(btn)btn.classList.add('active');
+const $ = id => document.getElementById(id);
+
+$("today").textContent = new Date().toLocaleDateString("bn-BD",{
+  day:"numeric",month:"long",year:"numeric"
+});
+
+/* SPLASH */
+window.addEventListener("load",()=>{
+  setTimeout(()=>$("splash").classList.add("hide"),1800);
+});
+
+/* BALANCE DISPLAY */
+function updateBalance() {
+  $("balance").textContent = hidden
+    ? "৳ ••••••••"
+    : "৳ " + balance.toLocaleString("en-IN",{
+        minimumFractionDigits:2,maximumFractionDigits:2
+      });
+}
+function toggleBalance() {
+  hidden = !hidden;
+  $("toggleBalance").textContent = hidden ? "◎ Show" : "◉ Hide";
+  updateBalance();
 }
 
-function demo(name){
- alert(name+' এখন শুধু ডেমো ফিচার।');
+/* DEMO MODAL */
+function openDemo(action) {
+  selectedAction = action;
+  $("modalTitle").textContent = action + " — Demo";
+  $("demoName").value = "";
+  $("demoAmount").value = "";
+  $("modal").classList.add("show");
+}
+function closeDemo() {
+  $("modal").classList.remove("show");
+}
+$("modal").addEventListener("click",e=>{
+  if(e.target === $("modal")) closeDemo();
+});
+
+/* DEMO TRANSACTION */
+function addDemo() {
+  const amount = Number($("demoAmount").value);
+  const name = $("demoName").value.trim() || selectedAction;
+
+  if(!Number.isFinite(amount) || amount <= 0 || amount > 25000) {
+    alert("১ থেকে ২৫,০০০ টাকার মধ্যে একটি ডেমো পরিমাণ দিন।");
+    return;
+  }
+  if(amount > balance) {
+    alert("ডেমো ব্যালেন্স পর্যাপ্ত নয়।");
+    return;
+  }
+
+  balance -= amount;
+  updateBalance();
+
+  const icons = {
+    "Send Money":"📤",
+    "Cash Out":"🏧",
+    "Mobile Recharge":"📱"
+  };
+
+  const row = document.createElement("div");
+  row.className = "transaction";
+
+  const icon = document.createElement("div");
+  icon.className = "tx-icon";
+  icon.textContent = icons[selectedAction] || "💳";
+
+  const info = document.createElement("div");
+  info.className = "tx-info";
+
+  const title = document.createElement("strong");
+  title.textContent = name;
+
+  const detail = document.createElement("small");
+  detail.textContent = selectedAction + " • Demo only";
+
+  info.append(title,detail);
+
+  const value = document.createElement("div");
+  value.className = "tx-amount expense";
+  value.textContent = "-৳" + amount.toLocaleString("en-IN");
+
+  row.append(icon,info,value);
+  $("transactions").prepend(row);
+
+  closeDemo();
+  alert("Demo Transaction সম্পন্ন! কোনো বাস্তব টাকা স্থানান্তর হয়নি।");
 }
 
-function sendDemo(){
- const number=document.getElementById('number').value.trim();
- const amount=Number(document.getElementById('money').value);
-
- if(!/^[0-9]{11}$/.test(number)){
-  alert('১১ সংখ্যার একটি পরীক্ষামূলক নম্বর লিখুন।');
-  return;
- }
- if(!Number.isFinite(amount)||amount<=0||amount>demoBalance){
-  alert('সঠিক ডেমো পরিমাণ লিখুন।');
-  return;
- }
-
- demoBalance-=amount;
- records.unshift({
-  name:'সেন্ড মানি ডেমো',
-  number:number,
-  amount:amount
- });
-
- document.getElementById('balance').innerText=
-  '৳ '+demoBalance.toLocaleString('en-BD');
-
- renderHistory();
- alert('ডেমো লেনদেন সম্পন্ন হয়েছে। কোনো বাস্তব টাকা পাঠানো হয়নি।');
- document.getElementById('number').value='';
- document.getElementById('money').value='';
+/* NAVIGATION */
+function setActive(button) {
+  document.querySelectorAll(".nav-item,.mobile-nav button")
+    .forEach(b=>b.classList.remove("active"));
+  if(button) button.classList.add("active");
 }
-
-function renderHistory(){
- const html=records.map(r=>`
-  <div class="transaction">
-   <div>
-    <b>${r.name}</b><br>
-    <small>${r.number}</small>
-   </div>
-   <div class="amount negative">
-    -৳ ${r.amount.toLocaleString('en-BD')}
-   </div>
-  </div>
- `).join('');
-
- document.getElementById('recent').innerHTML=
-  html||'<p>এখনো কোনো ডেমো লেনদেন নেই।</p>';
- document.getElementById('allHistory').innerHTML=
-  html||'কোনো ডেমো লেনদেন নেই।';
-}
-</script>
-</body>
-</html>
-       
+func

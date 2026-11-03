@@ -554,7 +554,14 @@ body:after {
   </div>
   <div class="owl-feet"><i></i><i></i></div>
 </div>
-  
+  <script>
+window.addEventListener("load", function () {
+  setTimeout(function () {
+    document.getElementById("splash").classList.add("hide");
+    document.querySelector(".layout").style.display = "grid";
+  }, 2000);
+});
+  </script>
 <body>
 
 <div class="splash" id="splash">
